@@ -752,12 +752,20 @@ function drawPage() {
   const page = activePages[currentPageIndex];
   const container = document.getElementById('canvasContainer');
   const cw = container.clientWidth, ch = container.clientHeight;
+  const dpr = window.devicePixelRatio || 1;
   scale = Math.min(cw / page.width, ch / page.height);
-  canvas.width = Math.round(page.width * scale);
-  canvas.height = Math.round(page.height * scale);
+  // Canvas buffer matches device pixels (Retina-aware) while CSS keeps logical size.
+  const cssW = Math.round(page.width * scale);
+  const cssH = Math.round(page.height * scale);
+  canvas.width = Math.round(cssW * dpr);
+  canvas.height = Math.round(cssH * dpr);
+  canvas.style.width = cssW + 'px';
+  canvas.style.height = cssH + 'px';
 
   ctx.save();
-  ctx.scale(scale, scale);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.scale(scale * dpr, scale * dpr);
   ctx.drawImage(maskImg, 0, 0, page.width, page.height);
 
   page.regions.forEach((r, i) => {
