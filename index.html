@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>語彙力トレーニング 1400+</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+  background: #f5f0eb;
+  color: #333;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: hidden;
+  height: 100dvh;
+}
+
+.screen { display: none; height: 100dvh; flex-direction: column; }
+.screen.active { display: flex; }
+
+.header {
+  background: linear-gradient(135deg, #d35400, #e67e22);
+  color: white;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  flex-shrink: 0;
+}
+.header-title { font-size: 16px; font-weight: 700; }
+.header-sub { font-size: 11px; opacity: 0.85; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.btn-icon {
+  background: none; border: none; color: white;
+  font-size: 20px; cursor: pointer; padding: 4px; border-radius: 6px;
+}
+.btn-icon:active { background: rgba(255,255,255,0.2); }
+.btn-back {
+  background: none; border: none; color: white;
+  font-size: 14px; cursor: pointer; padding: 4px 0;
+}
+.header-user {
+  font-size: 13px; font-weight: 600;
+  background: rgba(255,255,255,0.2);
+  padding: 2px 10px; border-radius: 10px;
+}
+
+.scroll-content {
+  flex: 1; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px;
+}
+
+/* ====== User Select ====== */
+.user-select-body {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px;
+  background: linear-gradient(135deg, #d35400, #e67e22);
+  color: white;
+}
+.app-title { font-size: 24px; font-weight: 700; }
+.app-subtitle { font-size: 14px; opacity: 0.8; }
+.app-prompt { font-size: 14px; margin-top: 20px; }
+.user-buttons { display: flex; gap: 16px; }
+.btn-user {
+  background: white; color: #d35400;
+  border: none; border-radius: 16px;
+  padding: 16px 40px; font-size: 18px; font-weight: 700;
+  cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.btn-user:active { transform: scale(0.96); }
+
+/* ====== Home (Group List) ====== */
+.group-card {
+  background: white; border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: pointer;
+  display: flex; align-items: center; gap: 12px;
+}
+.group-card:active { background: #fef5f0; }
+.group-card.empty { opacity: 0.4; cursor: default; }
+.group-card.empty:active { background: white; }
+.group-num {
+  background: #d35400; color: white;
+  font-size: 11px; font-weight: 700;
+  padding: 6px 8px; border-radius: 6px;
+  min-width: 72px; text-align: center; white-space: nowrap;
+}
+.group-card.empty .group-num { background: #ccc; }
+.group-info { flex: 1; min-width: 0; }
+.group-progress-text { font-size: 12px; color: #888; }
+.group-progress-bar {
+  height: 4px; background: #eee; border-radius: 2px;
+  margin-top: 4px; overflow: hidden;
+}
+.group-progress-fill {
+  height: 100%; background: #d35400; border-radius: 2px;
+}
+.group-arrow { color: #ccc; font-size: 20px; font-weight: 300; }
+
+/* ====== Group Detail ====== */
+.mode-buttons {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 16px;
+}
+.mode-btn {
+  width: 100%; padding: 12px; border: 1px solid #ddd;
+  border-radius: 10px; background: white;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  text-align: left;
+}
+.mode-btn:active { background: #fef5f0; }
+.mode-btn:disabled { opacity: 0.4; cursor: default; }
+.mode-btn:disabled:active { background: white; }
+.mode-btn-primary {
+  background: #d35400; color: white; border-color: #d35400;
+}
+.mode-btn-primary:active { background: #b94700; }
+.mode-btn-primary:disabled { background: #ccc; border-color: #ccc; }
+
+.unit-card {
+  background: white; border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+}
+.unit-card:active { background: #fef5f0; }
+.unit-num {
+  background: #d35400; color: white;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 8px; border-radius: 4px;
+}
+.unit-info { flex: 1; }
+.unit-stats { display: flex; gap: 8px; font-size: 12px; }
+.stat-correct { color: #2e7d32; font-weight: 600; }
+.stat-wrong { color: #c62828; font-weight: 600; }
+.stat-remaining { color: #888; }
+.unit-accuracy {
+  font-size: 12px; font-weight: 700;
+  padding: 2px 8px; border-radius: 8px;
+}
+.unit-accuracy.perfect { background: #e8f5e9; color: #2e7d32; }
+.unit-accuracy.good { background: #fff3e0; color: #e65100; }
+.unit-accuracy.bad { background: #fce4ec; color: #c62828; }
+.unit-accuracy.none { background: #f5f5f5; color: #999; }
+
+/* ====== Quiz ====== */
+.tab-bar {
+  display: flex; background: #fff;
+  border-bottom: 1px solid #ddd;
+  height: 40px; flex-shrink: 0;
+}
+.tab-btn {
+  flex: 1; border: none; background: #f5f0eb;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  color: #888; border-bottom: 3px solid transparent;
+}
+.tab-btn.active { background: #fff; color: #d35400; border-bottom-color: #d35400; }
+
+.quiz-main {
+  flex: 1; overflow: hidden; position: relative; background: #eee;
+}
+.canvas-container {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: auto; -webkit-overflow-scrolling: touch;
+}
+canvas { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.answer-container {
+  width: 100%; height: 100%; display: none;
+  align-items: center; justify-content: center;
+  overflow: auto; -webkit-overflow-scrolling: touch;
+  background: #f0f2f5;
+}
+.answer-container.active { display: flex; }
+.answer-container img {
+  max-width: 95%; max-height: 95%; object-fit: contain;
+  border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.bottom-bar {
+  height: 52px; background: white; border-top: 1px solid #ddd;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 12px; flex-shrink: 0;
+}
+.nav-btn {
+  background: #d35400; color: white;
+  border: none; border-radius: 8px;
+  padding: 8px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.nav-btn:disabled { background: #ccc; cursor: default; }
+.nav-btn:active:not(:disabled) { background: #b94700; }
+.page-info { text-align: center; line-height: 1.3; }
+.page-info-unit { font-size: 14px; font-weight: 700; color: #d35400; }
+.page-info-progress { font-size: 11px; color: #888; }
+
+.score-area { display: flex; gap: 6px; align-items: center; }
+.score-badge { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+.score-correct { background: #e8f5e9; color: #2e7d32; }
+.score-wrong { background: #fce4ec; color: #c62828; }
+
+.answer-buttons {
+  display: none; position: fixed; bottom: 60px; left: 50%;
+  transform: translateX(-50%); gap: 16px; z-index: 150;
+  background: rgba(255,255,255,0.95);
+  padding: 10px 20px; border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.answer-buttons.active { display: flex; }
+.ans-btn {
+  border: none; border-radius: 12px;
+  padding: 10px 28px; font-size: 18px; font-weight: 700; cursor: pointer;
+}
+.ans-btn-correct { background: #4caf50; color: white; }
+.ans-btn-wrong { background: #f44336; color: white; }
+.ans-btn:active { opacity: 0.8; }
+.loading {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%); color: #999; font-size: 14px;
+}
+
+/* ====== Settings ====== */
+.settings-content { padding: 16px; }
+.settings-section {
+  background: white; border-radius: 12px;
+  padding: 16px; margin-bottom: 12px;
+}
+.settings-section h3 { font-size: 14px; color: #d35400; margin-bottom: 10px; }
+.settings-btn {
+  width: 100%; padding: 12px; border: 1px solid #ddd;
+  border-radius: 8px; background: white;
+  font-size: 14px; cursor: pointer; margin-bottom: 6px;
+}
+.settings-btn:active { background: #f5f0eb; }
+.settings-btn-danger { color: #c62828; border-color: #ffcdd2; }
+.settings-input {
+  width: 100%; padding: 10px; border: 1px solid #ddd;
+  border-radius: 8px; font-size: 13px; margin-bottom: 8px;
+}
+.backup-textarea {
+  width: 100%; height: 100px; border: 1px solid #ddd;
+  border-radius: 8px; padding: 8px; font-size: 11px;
+  font-family: monospace; resize: vertical; margin-bottom: 8px;
+}
+</style>
+</head>
+<body>
+
+<!-- ====== User Select ====== -->
+<div id="screen-user" class="screen active">
+  <div class="user-select-body">
+    <h1 class="app-title">語彙力トレーニング 1400+</h1>
+    <p class="app-subtitle">②発展編</p>
+    <p class="app-prompt">ユーザーを選んでください</p>
+    <div class="user-buttons">
+      <button class="btn-user" id="btnUserSato">さと</button>
+      <button class="btn-user" id="btnUserPapa">ぱぱ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== Home (Group List) ====== -->
+<div id="screen-home" class="screen">
+  <div class="header">
+    <div>
+      <div class="header-title">語彙力トレーニング 1400+</div>
+      <div class="header-sub">②発展編</div>
+    </div>
+    <div class="header-right">
+      <span class="header-user" id="headerUser"></span>
+      <button class="btn-icon" id="btnSettings">⚙</button>
+    </div>
+  </div>
+  <div class="scroll-content" id="groupList"></div>
+</div>
+
+<!-- ====== Group Detail ====== -->
+<div id="screen-group" class="screen">
+  <div class="header">
+    <button class="btn-back" id="btnBackHome">← 戻る</button>
+    <div class="header-title" id="groupTitle"></div>
+    <div></div>
+  </div>
+  <div class="scroll-content">
+    <div id="modeSection"></div>
+    <div id="unitList"></div>
+  </div>
+</div>
+
+<!-- ====== Quiz ====== -->
+<div id="screen-quiz" class="screen">
+  <div class="header">
+    <button class="btn-back" id="btnBackGroup">← 戻る</button>
+    <div class="header-title" id="quizTitle"></div>
+    <div class="score-area">
+      <span class="score-badge score-correct" id="scoreCorrect">○ 0</span>
+      <span class="score-badge score-wrong" id="scoreWrong">× 0</span>
+    </div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabProblem">問題</button>
+    <button class="tab-btn" id="tabAnswer">解答</button>
+  </div>
+  <div class="quiz-main">
+    <div class="canvas-container" id="canvasContainer">
+      <canvas id="quizCanvas"></canvas>
+      <div class="loading" id="loading">読み込み中...</div>
+    </div>
+    <div class="answer-container" id="answerContainer">
+      <img id="answerImg" src="" alt="解答">
+    </div>
+  </div>
+  <div class="answer-buttons" id="answerButtons">
+    <button class="ans-btn ans-btn-wrong" id="btnWrong">✕</button>
+    <button class="ans-btn ans-btn-correct" id="btnCorrect">○</button>
+  </div>
+  <div class="bottom-bar">
+    <button class="nav-btn" id="btnPrev">← 前へ</button>
+    <div class="page-info">
+      <div class="page-info-unit" id="pageUnit">001</div>
+      <div class="page-info-progress" id="pageProgress">0 / 21</div>
+    </div>
+    <button class="nav-btn" id="btnNext">次へ →</button>
+  </div>
+</div>
+
+<!-- ====== Settings ====== -->
+<div id="screen-settings" class="screen">
+  <div class="header">
+    <button class="btn-back" id="btnBackSettings">← 戻る</button>
+    <div class="header-title">設定</div>
+    <div></div>
+  </div>
+  <div class="scroll-content settings-content">
+    <div class="settings-section">
+      <h3>Google Sheets バックアップ</h3>
+      <input type="text" id="sheetsUrl" class="settings-input" placeholder="スプレッドシート API URL">
+      <button class="settings-btn" id="btnSaveSheets">URLを保存</button>
+      <button class="settings-btn" id="btnRestoreSheets">スプレッドシートから復元</button>
+    </div>
+    <div class="settings-section">
+      <h3>手動バックアップ</h3>
+      <button class="settings-btn" id="btnExport">データをエクスポート</button>
+      <textarea id="backupArea" class="backup-textarea" placeholder="バックアップデータを貼り付けてインポート"></textarea>
+      <button class="settings-btn" id="btnImport">インポート</button>
+    </div>
+    <div class="settings-section">
+      <h3>ユーザー切替</h3>
+      <button class="settings-btn" id="btnSwitchUser">ユーザー選択に戻る</button>
+    </div>
+    <div class="settings-section">
+      <h3>データリセット</h3>
+      <button class="settings-btn settings-btn-danger" id="btnResetAll">全データを消去</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========================================
+// Constants
+// ========================================
+const DOUBLE_TAP_MS = 400;
+const TOTAL_UNITS = 200;
+const UNITS_PER_GROUP = 10;
+const GROUPS = [];
+for (let i = 0; i < TOTAL_UNITS / UNITS_PER_GROUP; i++) {
+  const s = i * UNITS_PER_GROUP + 1, e = (i + 1) * UNITS_PER_GROUP;
+  GROUPS.push({
+    id: i + 1,
+    label: `${String(s).padStart(3,'0')}〜${String(e).padStart(3,'0')}`,
+    start: s, end: e
+  });
+}
+
+// ========================================
+// State
+// ========================================
+let currentUser = null;
+let quizData = null;
+let currentGroupId = null;
+let activePages = [];
+let currentPageIndex = 0;
+let currentTab = 'problem';
+let origImg = null, maskImg = null;
+let canvas, ctx;
+let scale = 1;
+let regionStates = [];
+let activeRegion = -1;
+let lastTapRegion = -1, lastTapTime = 0;
+let sessionStates = {};
+let currentFilterMode = 'all';
+let targetRegions = [];
+let SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbzcGSbZzr8Q7cY1Af97gq9KSuHJ-5WB5oxFrRjMFu191lX3W246Xp7MmzRsk56wpxA/exec';
+
+// ========================================
+// Tracking (per-user, cumulative)
+// ========================================
+function getTracking() {
+  try { return JSON.parse(localStorage.getItem(`goi1400-tracking-${currentUser}`)) || {}; }
+  catch { return {}; }
+}
+function setTracking(data) {
+  localStorage.setItem(`goi1400-tracking-${currentUser}`, JSON.stringify(data));
+}
+function recordAnswer(pageId, regionIdx, isCorrect) {
+  const t = getTracking();
+  const p = String(pageId), k = String(regionIdx);
+  if (!t[p]) t[p] = {};
+  if (!t[p][k]) t[p][k] = { attempts: 0, correct: 0 };
+  t[p][k].attempts++;
+  if (isCorrect) t[p][k].correct++;
+  setTracking(t);
+  backupToSheets();
+}
+function getRegionTracking(pageId, regionIdx) {
+  const t = getTracking();
+  return (t[String(pageId)] && t[String(pageId)][String(regionIdx)]) || { attempts: 0, correct: 0 };
+}
+function getRegionAccuracy(pageId, regionIdx) {
+  const r = getRegionTracking(pageId, regionIdx);
+  return r.attempts === 0 ? null : r.correct / r.attempts;
+}
+function getPageStats(page) {
+  let total = page.regions.length, attempted = 0, correctCount = 0;
+  let totalAttempts = 0, totalCorrect = 0;
+  page.regions.forEach((_, ri) => {
+    const r = getRegionTracking(page.id, ri);
+    if (r.attempts > 0) {
+      attempted++;
+      totalAttempts += r.attempts;
+      totalCorrect += r.correct;
+      if (r.correct >= r.attempts) correctCount++;
+    }
+  });
+  return { total, attempted, correctCount, totalAttempts, totalCorrect,
+    accuracy: totalAttempts > 0 ? totalCorrect / totalAttempts : null };
+}
+
+// ========================================
+// Google Sheets Backup
+// ========================================
+async function backupToSheets() {
+  if (!SHEETS_API_URL) return;
+  try {
+    await fetch(SHEETS_API_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ app: 'goi1400', user: currentUser,
+        timestamp: new Date().toISOString(), data: getTracking() })
+    });
+  } catch (e) { console.warn('Sheets backup failed:', e); }
+}
+async function autoSyncFromSheets() {
+  if (!SHEETS_API_URL || !currentUser) return;
+  try {
+    const res = await fetch(`${SHEETS_API_URL}?app=goi1400&user=${encodeURIComponent(currentUser)}`);
+    const json = await res.json();
+    if (json.status !== 'ok' || !json.data) return;
+    const local = getTracking();
+    let changed = false;
+    for (const pid in json.data) {
+      if (!local[pid]) local[pid] = {};
+      for (const k in json.data[pid]) {
+        const remote = json.data[pid][k];
+        if (!local[pid][k] || remote.attempts > local[pid][k].attempts) {
+          local[pid][k] = remote; changed = true;
+        }
+      }
+    }
+    if (changed) { setTracking(local); renderHome(); }
+  } catch (e) { console.warn('Sheets sync failed:', e); }
+}
+async function restoreFromSheets() {
+  if (!SHEETS_API_URL) { alert('URLが未設定です'); return; }
+  try {
+    const res = await fetch(`${SHEETS_API_URL}?app=goi1400&user=${encodeURIComponent(currentUser)}`);
+    const json = await res.json();
+    if (json.status !== 'ok' || !json.data) { alert('データがありません'); return; }
+    const local = getTracking();
+    for (const pid in json.data) {
+      if (!local[pid]) local[pid] = {};
+      for (const k in json.data[pid]) local[pid][k] = json.data[pid][k];
+    }
+    setTracking(local);
+    alert('復元しました');
+  } catch (e) { alert('復元に失敗: ' + e.message); }
+}
+
+// ========================================
+// Manual Backup
+// ========================================
+function exportData() {
+  const data = { app: 'goi1400', user: currentUser, tracking: getTracking(),
+    exportedAt: new Date().toISOString() };
+  const json = JSON.stringify(data);
+  document.getElementById('backupArea').value = json;
+  navigator.clipboard.writeText(json).then(() => alert('クリップボードにコピーしました')).catch(() => {});
+}
+function importData() {
+  const text = document.getElementById('backupArea').value.trim();
+  if (!text) { alert('データを貼り付けてください'); return; }
+  try {
+    const data = JSON.parse(text);
+    if (!data.tracking) { alert('データ形式が不正です'); return; }
+    const local = getTracking();
+    for (const pid in data.tracking) {
+      if (!local[pid]) local[pid] = {};
+      for (const k in data.tracking[pid]) {
+        const remote = data.tracking[pid][k];
+        if (!local[pid][k] || remote.attempts > local[pid][k].attempts)
+          local[pid][k] = remote;
+      }
+    }
+    setTracking(local);
+    alert('インポートしました');
+  } catch (e) { alert('データ形式が不正です'); }
+}
+
+// ========================================
+// Screen Navigation
+// ========================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ========================================
+// User Selection
+// ========================================
+function selectUser(user) {
+  currentUser = user;
+  sessionStorage.setItem('goi1400-user', user);
+  document.getElementById('headerUser').textContent = user;
+  document.getElementById('sheetsUrl').value = SHEETS_API_URL;
+  renderHome();
+  showScreen('screen-home');
+  autoSyncFromSheets();
+}
+
+// ========================================
+// Home Screen (Group List)
+// ========================================
+function getGroupPages(group) {
+  if (!quizData) return [];
+  return quizData.pages.filter(p => {
+    const n = parseInt(p.unit);
+    return n >= group.start && n <= group.end;
+  });
+}
+
+function renderHome() {
+  const list = document.getElementById('groupList');
+  list.innerHTML = '';
+  GROUPS.forEach(group => {
+    const pages = getGroupPages(group);
+    const hasData = pages.length > 0;
+    const card = document.createElement('div');
+    card.className = 'group-card' + (hasData ? '' : ' empty');
+
+    let statsHtml;
+    if (hasData) {
+      let totalQ = 0, totalAns = 0;
+      pages.forEach(p => { const s = getPageStats(p); totalQ += s.total; totalAns += s.attempted; });
+      const pct = totalQ > 0 ? Math.round(totalAns / totalQ * 100) : 0;
+      statsHtml = `
+        <div class="group-progress-text">${pages.length} Unit · ${totalAns}/${totalQ}問回答</div>
+        <div class="group-progress-bar"><div class="group-progress-fill" style="width:${pct}%"></div></div>`;
+    } else {
+      statsHtml = `<div class="group-progress-text">未配信</div>`;
+    }
+
+    card.innerHTML = `
+      <div class="group-num">${group.label}</div>
+      <div class="group-info">${statsHtml}</div>
+      <div class="group-arrow">${hasData ? '›' : ''}</div>`;
+
+    if (hasData) card.addEventListener('click', () => openGroup(group.id));
+    list.appendChild(card);
+  });
+}
+
+// ========================================
+// Group Detail
+// ========================================
+function openGroup(groupId) {
+  currentGroupId = groupId;
+  document.getElementById('groupTitle').textContent = GROUPS[groupId - 1].label;
+  renderGroup();
+  showScreen('screen-group');
+}
+
+function renderGroup() {
+  const group = GROUPS[currentGroupId - 1];
+  const pages = getGroupPages(group);
+
+  // Mode stats
+  let totalQ = 0, unanswered = 0, below50 = 0, below67 = 0, below99 = 0;
+  pages.forEach(p => {
+    p.regions.forEach((_, ri) => {
+      totalQ++;
+      const acc = getRegionAccuracy(p.id, ri);
+      if (acc === null) unanswered++;
+      if (acc !== null && acc <= 0.5) below50++;
+      if (acc !== null && acc <= 0.67) below67++;
+      if (acc !== null && acc < 1.0) below99++;
+    });
+  });
+  const continueIdx = pages.findIndex(p =>
+    p.regions.some((_, ri) => getRegionAccuracy(p.id, ri) === null));
+
+  document.getElementById('modeSection').innerHTML = `
+    <div class="mode-buttons">
+      <button class="mode-btn mode-btn-primary" onclick="startMode('continue')" ${continueIdx === -1 ? 'disabled' : ''}>
+        続きから再開 ${unanswered > 0 ? `(${unanswered}問)` : ''}
+      </button>
+      <button class="mode-btn" onclick="startMode('all')">全問を解く (${totalQ}問)</button>
+      <button class="mode-btn" onclick="startMode('below50')" ${below50 === 0 ? 'disabled' : ''}>正答率 50%以下 (${below50}問)</button>
+      <button class="mode-btn" onclick="startMode('below67')" ${below67 === 0 ? 'disabled' : ''}>正答率 67%以下 (${below67}問)</button>
+      <button class="mode-btn" onclick="startMode('below99')" ${below99 === 0 ? 'disabled' : ''}>正答率 99%以下 (${below99}問)</button>
+      <button class="mode-btn" onclick="startMode('unanswered')" ${unanswered === 0 ? 'disabled' : ''}>未回答のみ (${unanswered}問)</button>
+    </div>`;
+
+  // Unit list
+  const unitList = document.getElementById('unitList');
+  unitList.innerHTML = '';
+  pages.forEach((page, idx) => {
+    const s = getPageStats(page);
+    const card = document.createElement('div');
+    card.className = 'unit-card';
+
+    let accHtml;
+    if (s.totalAttempts > 0) {
+      const pct = Math.round(s.accuracy * 100);
+      const cls = pct === 100 ? 'perfect' : pct >= 67 ? 'good' : 'bad';
+      accHtml = `<span class="unit-accuracy ${cls}">${pct}%</span>`;
+    } else {
+      accHtml = `<span class="unit-accuracy none">未回答</span>`;
+    }
+
+    card.innerHTML = `
+      <div class="unit-num">${page.unit}</div>
+      <div class="unit-info">
+        <div class="unit-stats">
+          <span class="stat-correct">○${s.correctCount}</span>
+          <span class="stat-wrong">×${s.attempted - s.correctCount}</span>
+          <span class="stat-remaining">/ ${s.total}</span>
+        </div>
+      </div>
+      ${accHtml}`;
+
+    card.addEventListener('click', () => { currentFilterMode = 'all'; activePages = pages; startQuiz(idx); });
+    unitList.appendChild(card);
+  });
+}
+
+function startMode(mode) {
+  currentFilterMode = mode;
+  const pages = getGroupPages(GROUPS[currentGroupId - 1]);
+  if (mode === 'all') {
+    activePages = pages; startQuiz(0);
+  } else if (mode === 'continue') {
+    activePages = pages;
+    const idx = pages.findIndex(p => p.regions.some((_, ri) => getRegionAccuracy(p.id, ri) === null));
+    startQuiz(idx >= 0 ? idx : 0);
+  } else if (mode === 'unanswered') {
+    activePages = pages.filter(p => p.regions.some((_, ri) => getRegionAccuracy(p.id, ri) === null));
+    if (activePages.length > 0) startQuiz(0);
+  } else {
+    const th = mode === 'below50' ? 0.5 : mode === 'below67' ? 0.67 : 0.99;
+    activePages = pages.filter(p => p.regions.some((_, ri) => {
+      const a = getRegionAccuracy(p.id, ri); return a !== null && a <= th;
+    }));
+    if (activePages.length > 0) startQuiz(0);
+  }
+}
+
+function isTargetRegion(pageId, regionIdx) {
+  if (currentFilterMode === 'all' || currentFilterMode === 'continue') return true;
+  const acc = getRegionAccuracy(pageId, regionIdx);
+  if (currentFilterMode === 'unanswered') return acc === null;
+  const th = currentFilterMode === 'below50' ? 0.5 : currentFilterMode === 'below67' ? 0.67 : 0.99;
+  return acc !== null && acc <= th;
+}
+
+// ========================================
+// Quiz Engine
+// ========================================
+function isUnmaskedRegion(r) { return r.type === 'step2' || r.type === 'step3'; }
+
+function enhanceOrangeRegion(ctx, sx, sy, sw, sh) {
+  const imageData = ctx.getImageData(sx, sy, sw, sh);
+  const d = imageData.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i+1], b = d[i+2];
+    if (r > g && g > b && (r - b) > 15) {
+      d[i] = Math.min(255, Math.round(r * 1.6 - (g + b) * 0.15));
+      d[i+1] = Math.min(255, Math.round(g * 0.6));
+      d[i+2] = Math.min(255, Math.round(b * 0.4));
+    }
+  }
+  ctx.putImageData(imageData, sx, sy);
+}
+
+function startQuiz(startIdx) {
+  currentPageIndex = startIdx;
+  sessionStates = {};
+  currentTab = 'problem';
+  showScreen('screen-quiz');
+  loadPage(startIdx);
+}
+
+function loadPage(idx) {
+  currentPageIndex = idx;
+  const page = activePages[idx];
+  document.getElementById('loading').style.display = 'block';
+
+  targetRegions = page.regions.map((_, ri) => isTargetRegion(page.id, ri));
+  if (sessionStates[page.id]) {
+    regionStates = [...sessionStates[page.id]];
+  } else {
+    regionStates = page.regions.map((r, i) => {
+      if (!targetRegions[i]) return 'skipped';
+      return isUnmaskedRegion(r) ? 'revealed' : 'hidden';
+    });
+  }
+  activeRegion = -1;
+  document.getElementById('answerButtons').classList.remove('active');
+  document.getElementById('answerImg').src = 'images/' + page.answer;
+
+  const img1 = new Image(), img2 = new Image();
+  let loaded = 0;
+  function onLoad() {
+    if (++loaded === 2) {
+      origImg = img1; maskImg = img2;
+      document.getElementById('loading').style.display = 'none';
+      drawPage();
+    }
+  }
+  img1.onload = onLoad; img2.onload = onLoad;
+  img1.src = 'images/' + page.orig;
+  img2.src = 'images/' + page.mask;
+  if (currentTab === 'answer') switchTab('answer');
+}
+
+function drawPage() {
+  if (!maskImg || !origImg) return;
+  const page = activePages[currentPageIndex];
+  const container = document.getElementById('canvasContainer');
+  const cw = container.clientWidth, ch = container.clientHeight;
+  scale = Math.min(cw / page.width, ch / page.height);
+  canvas.width = Math.round(page.width * scale);
+  canvas.height = Math.round(page.height * scale);
+
+  ctx.save();
+  ctx.scale(scale, scale);
+  ctx.drawImage(maskImg, 0, 0, page.width, page.height);
+
+  page.regions.forEach((r, i) => {
+    const state = regionStates[i];
+    const unmasked = isUnmaskedRegion(r);
+
+    if (state === 'skipped') {
+      ctx.drawImage(origImg, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      if (unmasked && r.answer) {
+        ctx.font = 'bold 28px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle = '#aaa';
+        ctx.fillText(r.answer, r.x + r.w / 2, r.y + r.h - 4);
+      }
+      return;
+    }
+
+    if (unmasked || state === 'revealed' || state === 'correct' || state === 'wrong') {
+      ctx.drawImage(origImg, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
+      if (r.type === 'step1') {
+        ctx.save(); ctx.scale(1/scale, 1/scale);
+        enhanceOrangeRegion(ctx,
+          Math.round(r.x * scale), Math.round(r.y * scale),
+          Math.round(r.w * scale), Math.round(r.h * scale));
+        ctx.restore();
+      }
+    }
+
+    if (i === activeRegion) {
+      ctx.fillStyle = 'rgba(255, 193, 7, 0.2)';
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      ctx.strokeStyle = '#f9a825';
+      ctx.lineWidth = 2 / scale;
+      ctx.strokeRect(r.x, r.y, r.w, r.h);
+    } else if (state === 'correct') {
+      ctx.fillStyle = 'rgba(76, 175, 80, 0.15)';
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      ctx.strokeStyle = '#4caf50';
+      ctx.lineWidth = 2 / scale;
+      ctx.strokeRect(r.x, r.y, r.w, r.h);
+    } else if (state === 'wrong') {
+      ctx.fillStyle = 'rgba(244, 67, 54, 0.15)';
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      ctx.strokeStyle = '#f44336';
+      ctx.lineWidth = 2 / scale;
+      ctx.strokeRect(r.x, r.y, r.w, r.h);
+    } else if (targetRegions[i] && currentFilterMode !== 'all' && currentFilterMode !== 'continue') {
+      ctx.strokeStyle = '#d35400';
+      ctx.lineWidth = 2 / scale;
+      ctx.setLineDash([6 / scale, 4 / scale]);
+      ctx.strokeRect(r.x, r.y, r.w, r.h);
+      ctx.setLineDash([]);
+    }
+
+    if (unmasked && r.answer && (i === activeRegion || state === 'correct' || state === 'wrong')) {
+      ctx.font = 'bold 32px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      const color = state === 'correct' ? '#2e7d32' : state === 'wrong' ? '#c62828' : '#e65100';
+      ctx.fillStyle = color;
+      ctx.fillText(r.answer, r.x + r.w / 2, r.y + r.h - 4);
+    }
+  });
+  ctx.restore();
+  updateQuizUI();
+}
+
+function updateQuizUI() {
+  const page = activePages[currentPageIndex];
+  document.getElementById('quizTitle').textContent = `Unit ${page.unit}`;
+  document.getElementById('pageUnit').textContent = page.unit;
+  let correct = 0, wrong = 0, total = 0;
+  regionStates.forEach((s, i) => {
+    if (s === 'skipped') return;
+    total++;
+    if (s === 'correct') correct++;
+    if (s === 'wrong') wrong++;
+  });
+  document.getElementById('pageProgress').textContent = `${correct + wrong} / ${total}`;
+  document.getElementById('scoreCorrect').textContent = `○ ${correct}`;
+  document.getElementById('scoreWrong').textContent = `× ${wrong}`;
+  document.getElementById('btnPrev').disabled = currentPageIndex === 0;
+  document.getElementById('btnNext').disabled = currentPageIndex === activePages.length - 1;
+}
+
+function hitTest(x, y) {
+  const page = activePages[currentPageIndex];
+  const rect = canvas.getBoundingClientRect();
+  const imgX = (x - rect.left) / scale, imgY = (y - rect.top) / scale;
+  for (let i = page.regions.length - 1; i >= 0; i--) {
+    const r = page.regions[i];
+    if (imgX >= r.x && imgX <= r.x + r.w && imgY >= r.y && imgY <= r.y + r.h) return i;
+  }
+  return -1;
+}
+
+function onCanvasTap(e) {
+  e.preventDefault();
+  const touch = e.changedTouches ? e.changedTouches[0] : e;
+  const regionIdx = hitTest(touch.clientX, touch.clientY);
+
+  if (regionIdx === -1) {
+    if (activeRegion !== -1) {
+      activeRegion = -1;
+      document.getElementById('answerButtons').classList.remove('active');
+      drawPage();
+    }
+    return;
+  }
+
+  const page = activePages[currentPageIndex];
+  const region = page.regions[regionIdx];
+  const state = regionStates[regionIdx];
+
+  if (state === 'skipped') return;
+
+  const now = Date.now();
+  const isDoubleTap = (regionIdx === lastTapRegion && now - lastTapTime < DOUBLE_TAP_MS);
+  lastTapRegion = regionIdx;
+  lastTapTime = now;
+
+  if (state === 'correct' || state === 'wrong') {
+    regionStates[regionIdx] = isUnmaskedRegion(region) ? 'revealed' : 'hidden';
+    activeRegion = -1;
+    document.getElementById('answerButtons').classList.remove('active');
+    sessionStates[page.id] = [...regionStates];
+    drawPage();
+  } else if (state === 'hidden') {
+    if (!isDoubleTap) return;
+    regionStates[regionIdx] = 'revealed';
+    activeRegion = regionIdx;
+    document.getElementById('answerButtons').classList.add('active');
+    sessionStates[page.id] = [...regionStates];
+    drawPage();
+  } else if (state === 'revealed') {
+    if (!isDoubleTap) return;
+    activeRegion = regionIdx;
+    document.getElementById('answerButtons').classList.add('active');
+    drawPage();
+  }
+}
+
+function markAnswer(result) {
+  if (activeRegion === -1) return;
+  const page = activePages[currentPageIndex];
+  recordAnswer(page.id, activeRegion, result === 'correct');
+  regionStates[activeRegion] = result;
+  sessionStates[page.id] = [...regionStates];
+  activeRegion = -1;
+  document.getElementById('answerButtons').classList.remove('active');
+  drawPage();
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tabProblem').classList.toggle('active', tab === 'problem');
+  document.getElementById('tabAnswer').classList.toggle('active', tab === 'answer');
+  document.getElementById('canvasContainer').style.display = tab === 'problem' ? 'flex' : 'none';
+  document.getElementById('answerContainer').classList.toggle('active', tab === 'answer');
+  if (tab === 'answer') {
+    document.getElementById('answerButtons').classList.remove('active');
+    document.getElementById('answerButtons').style.display = 'none';
+    document.getElementById('answerImg').src = 'images/' + activePages[currentPageIndex].answer;
+  } else {
+    document.getElementById('answerButtons').style.display = '';
+  }
+}
+
+// ========================================
+// Init
+// ========================================
+async function init() {
+  canvas = document.getElementById('quizCanvas');
+  ctx = canvas.getContext('2d', { willReadFrequently: true });
+  SHEETS_API_URL = localStorage.getItem('goi1400-sheets-url') || 'https://script.google.com/macros/s/AKfycbzcGSbZzr8Q7cY1Af97gq9KSuHJ-5WB5oxFrRjMFu191lX3W246Xp7MmzRsk56wpxA/exec';
+
+  const resp = await fetch('quiz-data.json');
+  quizData = await resp.json();
+
+  // Quiz events
+  canvas.addEventListener('click', onCanvasTap);
+  canvas.addEventListener('touchend', onCanvasTap);
+  document.getElementById('tabProblem').addEventListener('click', () => switchTab('problem'));
+  document.getElementById('tabAnswer').addEventListener('click', () => switchTab('answer'));
+  document.getElementById('btnPrev').addEventListener('click', () => {
+    if (currentPageIndex > 0) loadPage(currentPageIndex - 1);
+  });
+  document.getElementById('btnNext').addEventListener('click', () => {
+    if (currentPageIndex < activePages.length - 1) loadPage(currentPageIndex + 1);
+  });
+  document.getElementById('btnCorrect').addEventListener('click', () => markAnswer('correct'));
+  document.getElementById('btnWrong').addEventListener('click', () => markAnswer('wrong'));
+
+  // Navigation events
+  document.getElementById('btnBackHome').addEventListener('click', () => {
+    renderHome(); showScreen('screen-home');
+  });
+  document.getElementById('btnBackGroup').addEventListener('click', () => {
+    renderGroup(); showScreen('screen-group');
+  });
+  document.getElementById('btnSettings').addEventListener('click', () => {
+    document.getElementById('sheetsUrl').value = SHEETS_API_URL;
+    showScreen('screen-settings');
+  });
+  document.getElementById('btnBackSettings').addEventListener('click', () => {
+    renderHome(); showScreen('screen-home');
+  });
+
+  // User events
+  document.getElementById('btnUserSato').addEventListener('click', () => selectUser('さと'));
+  document.getElementById('btnUserPapa').addEventListener('click', () => selectUser('ぱぱ'));
+
+  // Settings events
+  document.getElementById('btnSaveSheets').addEventListener('click', () => {
+    SHEETS_API_URL = document.getElementById('sheetsUrl').value.trim();
+    localStorage.setItem('goi1400-sheets-url', SHEETS_API_URL);
+    alert('保存しました');
+  });
+  document.getElementById('btnRestoreSheets').addEventListener('click', restoreFromSheets);
+  document.getElementById('btnExport').addEventListener('click', exportData);
+  document.getElementById('btnImport').addEventListener('click', importData);
+  document.getElementById('btnSwitchUser').addEventListener('click', () => {
+    currentUser = null; sessionStates = {};
+    showScreen('screen-user');
+  });
+  document.getElementById('btnResetAll').addEventListener('click', () => {
+    if (!confirm(`${currentUser}の全データを消去しますか？`)) return;
+    localStorage.removeItem(`goi1400-tracking-${currentUser}`);
+    renderHome();
+    showScreen('screen-home');
+    alert('消去しました');
+  });
+
+  window.addEventListener('resize', () => {
+    if (document.getElementById('screen-quiz').classList.contains('active') && currentTab === 'problem')
+      drawPage();
+  });
+
+  // Auto-login
+  const saved = sessionStorage.getItem('goi1400-user');
+  if (saved) selectUser(saved);
+}
+
+init();
+</script>
+</body>
+</html>
