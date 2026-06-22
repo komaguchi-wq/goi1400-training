@@ -886,11 +886,7 @@ function onCanvasTap(e) {
 
   if (state === 'skipped') return;
 
-  const now = Date.now();
-  const isDoubleTap = (regionIdx === lastTapRegion && now - lastTapTime < DOUBLE_TAP_MS);
-  lastTapRegion = regionIdx;
-  lastTapTime = now;
-
+  // Single tap reveals/activates a region (changed from double-tap).
   if (state === 'correct' || state === 'wrong') {
     regionStates[regionIdx] = isUnmaskedRegion(region) ? 'revealed' : 'hidden';
     activeRegion = -1;
@@ -898,14 +894,12 @@ function onCanvasTap(e) {
     sessionStates[page.id] = [...regionStates];
     drawPage();
   } else if (state === 'hidden') {
-    if (!isDoubleTap) return;
     regionStates[regionIdx] = 'revealed';
     activeRegion = regionIdx;
     document.getElementById('answerButtons').classList.add('active');
     sessionStates[page.id] = [...regionStates];
     drawPage();
   } else if (state === 'revealed') {
-    if (!isDoubleTap) return;
     activeRegion = regionIdx;
     document.getElementById('answerButtons').classList.add('active');
     drawPage();
