@@ -536,6 +536,7 @@ function showScreen(id) {
 function selectUser(user) {
   currentUser = user;
   sessionStorage.setItem('goi1400-user', user);
+  try { localStorage.setItem('study-user', user); } catch(e) {}
   document.getElementById('headerUser').textContent = user;
   document.getElementById('sheetsUrl').value = SHEETS_API_URL;
   renderHome();
@@ -987,6 +988,7 @@ async function init() {
   document.getElementById('btnImport').addEventListener('click', importData);
   document.getElementById('btnSwitchUser').addEventListener('click', () => {
     currentUser = null; sessionStates = {};
+    try { localStorage.removeItem('study-user'); } catch(e) {}
     showScreen('screen-user');
   });
   document.getElementById('btnResetAll').addEventListener('click', () => {
@@ -1002,9 +1004,9 @@ async function init() {
       drawPage();
   });
 
-  // Auto-login
-  const saved = sessionStorage.getItem('goi1400-user');
-  if (saved) selectUser(saved);
+  // Auto-login（共有キー study-user を最優先：全アプリ共通の端末ユーザー記憶）
+  const saved = localStorage.getItem('study-user') || sessionStorage.getItem('goi1400-user');
+  if (saved === 'さと' || saved === 'ぱぱ') selectUser(saved);
 }
 
 init();
