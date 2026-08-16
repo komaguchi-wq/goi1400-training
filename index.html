@@ -607,9 +607,9 @@ function renderGroup() {
       totalQ++;
       const acc = getRegionAccuracy(p.id, ri);
       if (acc === null) unanswered++;
-      if (acc !== null && acc <= 0.5) below50++;
-      if (acc !== null && acc <= 0.67) below67++;
-      if (acc !== null && acc < 1.0) below99++;
+      if (acc !== null && acc < 0.5) below50++;
+      if (acc !== null && acc < 0.66) below67++;
+      if (acc !== null && acc < 0.8) below99++;
     });
   });
   const continueIdx = pages.findIndex(p =>
@@ -621,9 +621,9 @@ function renderGroup() {
         続きから再開 ${unanswered > 0 ? `(${unanswered}問)` : ''}
       </button>
       <button class="mode-btn" onclick="startMode('all')">全問を解く (${totalQ}問)</button>
-      <button class="mode-btn" onclick="startMode('below50')" ${below50 === 0 ? 'disabled' : ''}>正答率 50%以下 (${below50}問)</button>
-      <button class="mode-btn" onclick="startMode('below67')" ${below67 === 0 ? 'disabled' : ''}>正答率 67%以下 (${below67}問)</button>
-      <button class="mode-btn" onclick="startMode('below99')" ${below99 === 0 ? 'disabled' : ''}>正答率 99%以下 (${below99}問)</button>
+      <button class="mode-btn" onclick="startMode('below50')" ${below50 === 0 ? 'disabled' : ''}>正答率 50%未満 (${below50}問)</button>
+      <button class="mode-btn" onclick="startMode('below67')" ${below67 === 0 ? 'disabled' : ''}>正答率 66%未満 (${below67}問)</button>
+      <button class="mode-btn" onclick="startMode('below99')" ${below99 === 0 ? 'disabled' : ''}>正答率 80%未満 (${below99}問)</button>
       <button class="mode-btn" onclick="startMode('unanswered')" ${unanswered === 0 ? 'disabled' : ''}>未回答のみ (${unanswered}問)</button>
     </div>`;
 
@@ -673,9 +673,9 @@ function startMode(mode) {
     activePages = pages.filter(p => p.regions.some((_, ri) => getRegionAccuracy(p.id, ri) === null));
     if (activePages.length > 0) startQuiz(0);
   } else {
-    const th = mode === 'below50' ? 0.5 : mode === 'below67' ? 0.67 : 0.99;
+    const th = mode === 'below50' ? 0.5 : mode === 'below67' ? 0.66 : 0.8;
     activePages = pages.filter(p => p.regions.some((_, ri) => {
-      const a = getRegionAccuracy(p.id, ri); return a !== null && a <= th;
+      const a = getRegionAccuracy(p.id, ri); return a !== null && a < th;
     }));
     if (activePages.length > 0) startQuiz(0);
   }
@@ -685,8 +685,8 @@ function isTargetRegion(pageId, regionIdx) {
   if (currentFilterMode === 'all' || currentFilterMode === 'continue') return true;
   const acc = getRegionAccuracy(pageId, regionIdx);
   if (currentFilterMode === 'unanswered') return acc === null;
-  const th = currentFilterMode === 'below50' ? 0.5 : currentFilterMode === 'below67' ? 0.67 : 0.99;
-  return acc !== null && acc <= th;
+  const th = currentFilterMode === 'below50' ? 0.5 : currentFilterMode === 'below67' ? 0.66 : 0.8;
+  return acc !== null && acc < th;
 }
 
 // ========================================
